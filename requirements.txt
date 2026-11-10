@@ -1,0 +1,15 @@
+# CAN communication
+python-can>=4.5,<6
+
+# SSD1309 OLED displays
+luma.oled>=3.14,<5
+Pillow>=11,<13
+
+# GPIO abstraction
+gpiozero>=2.0,<3
+
+# I2C communication
+smbus2>=0.5,<1
+
+# Raspberry Pi GPIO backend (Linux only)
+adafruit-lgpio>=0.2.2.0; sys_platform == "linux"
