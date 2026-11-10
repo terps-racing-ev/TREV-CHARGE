@@ -1,4 +1,4 @@
-
+from pathlib import Path
 from dataclasses import dataclass
 from PIL import Image, ImageDraw, ImageFont
 
@@ -6,8 +6,14 @@ from PIL import Image, ImageDraw, ImageFont
 WIDTH = 128
 HEIGHT = 64
 
-# Compact monospace font for the dense 128x64 layout
-FONT = ImageFont.truetype("DejaVuSansMono.ttf", 8)
+# FONT IN ASSETS!!!!!!!!!!
+FONT_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "assets"
+    / "adafruits-gfx-library-default-font.ttf"
+)
+
+FONT = ImageFont.truetype(str(FONT_PATH), size=8)
 
 
 @dataclass
@@ -51,14 +57,14 @@ def draw_main_screen(data: ScreenData) -> Image.Image:
 
     lines = [
         (
-            f"Trgt V:{data.target_voltage:.0f} "
+            f">>Target   "
             f"I:{data.target_current:.0f} "
-            f"S:{data.target_soc:.0f}"
+            f"S:{data.target_soc:.0f}%"
         ),
         (
             f"Actl V:{data.actual_voltage:.0f} "
             f"I:{data.actual_current:.0f} "
-            f"S:{data.actual_soc:.0f}"
+            f"S:{data.actual_soc:.0f}%"
         ),
         (
             f"{data.cell_voltage:.0f}V "
@@ -69,7 +75,7 @@ def draw_main_screen(data: ScreenData) -> Image.Image:
             f"Temp Min:{data.min_temp:.0f} "
             f"Max:{data.max_temp:.0f}"
         ),
-        f"Chrg Time:{minutes:02d}m {seconds:02d}s",
+        f"Charge Time:{minutes:02d}m {seconds:02d}s",
         f"Status:{data.status}",
         f"Error:{data.error}",
     ]

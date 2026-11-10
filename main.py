@@ -7,7 +7,7 @@ from controller.state import ChargerStateMachine
 
 def main():
     print("---------------------------------")
-    print(" T R E V 5 CHARGER")
+    print(" TREV5 CHARGER")
     print(" By Nikolai Souza & Ethan Wang")
     print("---------------------------------")
     print(f"Python: {sys.version.split()[0]}")
