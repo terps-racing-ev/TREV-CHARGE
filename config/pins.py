@@ -1,0 +1,15 @@
+# BCM NUMBERS!!!!!
+# SOC encoder
+SOC_ENCODER_A = 17
+SOC_ENCODER_B = 27
+
+# Current encoder
+CURRENT_ENCODER_A = 22
+CURRENT_ENCODER_B = 24
+
+# Rocker switch
+ROCKER_SWITCH = 16
+
+# I2C OLED
+OLED_SDA = 2
+OLED_SCL = 3
