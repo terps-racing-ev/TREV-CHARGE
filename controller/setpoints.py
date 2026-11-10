@@ -1,43 +1,62 @@
+import math
+
 from config.settings import settings
 
-
 class Setpoints:
-    def __init__(
-        self,
-        target_soc: int,
-        current: float,
-        current_min: float,
-        current_max: float,
-    ):
-        if current_min > current_max:
-            raise ValueError("Invalid current limits")
+    def __init__(self):
+        self.target_soc = settings.default_soc
+        self.current = settings.default_current
 
-        self.target_soc = max(0, min(100, target_soc))
+        self._validate()
 
-        self.current_min = current_min
-        self.current_max = current_max
+    def _validate(self):
+        if not (
+            settings.min_soc <= self.target_soc <= settings.max_soc
+        ):
+            raise ValueError("Default SOC outside limits")
 
-        self.current = max(
-            current_min,
-            min(current, current_max)
-        )
+        if not (
+            settings.min_current <= self.current <= settings.max_current
+        ):
+            raise ValueError("Default current outside limits")
+
+        if settings.soc_step <= 0 or settings.current_step <= 0:
+            raise ValueError("Encoder steps must be positive")
+
+    @staticmethod
+    def _clamp(value, minimum, maximum):
+        return max(minimum, min(value, maximum))
 
     def adjust(self, soc_delta=0, current_delta=0):
-        self.target_soc = max(
-            0,
-            min(
-                100,
-                self.target_soc + soc_delta * settings.soc_step
-            )
+        """Adjust setpoints using rotary encoder movements."""
+
+        self.target_soc = self._clamp(
+            self.target_soc + soc_delta * settings.soc_step,
+            settings.min_soc,
+            settings.max_soc,
         )
 
-        self.current = max(
-            self.current_min,
-            min(
-                self.current_max,
-                self.current + current_delta * settings.current_step
-            )
+        self.current = self._clamp(
+            self.current + current_delta * settings.current_step,
+            settings.min_current,
+            settings.max_current,
         )
+
+        # Avoid floating-point rounding artifacts
+        self.current = round(self.current, 2)
 
     def target_reached(self, bms_soc: float) -> bool:
+        """Return True when valid BMS SOC reaches target."""
+
+        if not math.isfinite(bms_soc):
+            raise ValueError("Invalid BMS SOC")
+
+        if not 0 <= bms_soc <= 100:
+            raise ValueError("BMS SOC outside valid range")
+
         return bms_soc >= self.target_soc
+
+    def reset(self):
+        """Restore default operator settings."""
+        self.target_soc = settings.default_soc
+        self.current = settings.default_current
