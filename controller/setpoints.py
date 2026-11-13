@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import math
 
 from config.settings import settings
+from controller.battery import soc_to_cell_voltage, soc_to_pack_voltage
 
 class Setpoints:
     def __init__(self):
@@ -27,6 +30,15 @@ class Setpoints:
     def _clamp(value, minimum, maximum):
         return max(minimum, min(value, maximum))
 
+    @property
+    def target_cell_voltage(self) -> float:
+        return soc_to_cell_voltage(self.target_soc)
+
+    @property
+    def target_voltage(self) -> float:
+        """Provisional pack CV target; recalculated after every SOC adjustment."""
+        return soc_to_pack_voltage(self.target_soc, settings.pack_series)
+
     def adjust(self, soc_delta=0, current_delta=0):
         """Adjust setpoints using rotary encoder movements."""
 
@@ -45,8 +57,11 @@ class Setpoints:
         # Avoid floating-point rounding artifacts
         self.current = round(self.current, 2)
 
-    def target_reached(self, bms_soc: float) -> bool:
+    def target_reached(self, bms_soc: float | None) -> bool:
         """Return True when valid BMS SOC reaches target."""
+
+        if bms_soc is None:
+            return False
 
         if not math.isfinite(bms_soc):
             raise ValueError("Invalid BMS SOC")

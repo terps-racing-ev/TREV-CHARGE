@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import logging
 
 
 class ChargerState(Enum):
@@ -17,5 +18,5 @@ class ChargerStateMachine:
         if self.state == new_state:
             return
 
-        print(f"[STATE] {self.state.name} -> {new_state.name}")
+        logging.getLogger(__name__).info("State %s -> %s", self.state.name, new_state.name)
         self.state = new_state

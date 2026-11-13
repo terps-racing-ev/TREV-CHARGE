@@ -1,9 +1,10 @@
+from controller.setpoints import Setpoints
 from ui.screens import ScreenData, draw_main_screen
 
 # Testing for screen, might not be fully accurate, made it very quickly.
 
 data = ScreenData(
-    target_voltage=400,
+    target_voltage=Setpoints().target_voltage,
     target_current=15,
     target_soc=80,
 

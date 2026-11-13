@@ -19,17 +19,17 @@ class CANInterface:
 
         return self.bus.recv(timeout=timeout)
 
-    def send(self, arbitration_id: int, data: bytes):
+    def send(self, arbitration_id: int, data: bytes, *, extended: bool = False):
         if self.bus is None:
             raise RuntimeError("CAN bus not connected")
 
         message = can.Message(
             arbitration_id=arbitration_id,
             data=data,
-            is_extended_id=False,
+            is_extended_id=extended,
         )
 
-        self.bus.send(message)
+        self.bus.send(message, timeout=0.05)
 
     def close(self):
         if self.bus is not None:

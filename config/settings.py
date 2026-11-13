@@ -30,6 +30,14 @@ class Settings:
     can_bms_bitrate: int = 500_000
     can_charger_bitrate: int = 250_000
 
+    # Confirmed model: HK-LF-540-14. Protocol 1000 assumed pending bench check.
+    charger_min_voltage: float = 350.0
+    charger_max_voltage: float = 680.0
+    charger_max_current: float = 14.0
+    charger_command_period_s: float = 1.0
+    charger_feedback_timeout_s: float = 3.0
+    charger_schedule_timeout_s: float = 2.0
+
     # OLED display
     oled_width: int = 128
     oled_height: int = 64
